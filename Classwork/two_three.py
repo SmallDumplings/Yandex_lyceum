@@ -35,10 +35,10 @@ class AppWindow(QMainWindow):
         seasion.mount('http://', adapter)
         seasion.mount('https://', adapter)
         responce = seasion.get("https://static-maps.yandex.ru/1.x/", params=map_params)
-        with open("../image/tmp.png", mode="wb") as tmp:
+        with open("image/tmp.png", mode="wb") as tmp:
             tmp.write(responce.content)
         pixmap = QPixmap()
-        pixmap.load("tmp.png")
+        pixmap.load("image/tmp.png")
         self.map.setPixmap(pixmap)
 
     def keyPressEvent(self, event):
