@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
+from PyQt5 import QtCore
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -20,16 +21,19 @@ class AppWindow(QMainWindow):
         self.but1.move(50, 450)
         self.but1.resize(100, 50)
         self.but1.clicked.connect(self.set_type_map)
+        self.but1.setFocusPolicy(QtCore.Qt.NoFocus)
 
         self.but2 = QPushButton("Спутник", self)
         self.but2.move(190, 450)
         self.but2.resize(100, 50)
         self.but2.clicked.connect(self.set_type_map)
+        self.but2.setFocusPolicy(QtCore.Qt.NoFocus)
 
         self.but3 = QPushButton("Гибрид", self)
         self.but3.move(340, 450)
         self.but3.resize(100, 50)
         self.but3.clicked.connect(self.set_type_map)
+        self.but3.setFocusPolicy(QtCore.Qt.NoFocus)
 
         self.map_ll = [55.7031122, 37.5308796]
         self.zoom = 5
@@ -50,10 +54,10 @@ class AppWindow(QMainWindow):
         seasion.mount('http://', adapter)
         seasion.mount('https://', adapter)
         responce = seasion.get("https://static-maps.yandex.ru/1.x/", params=map_params)
-        with open("../image/tmp.png", mode="wb") as tmp:
+        with open("image/tmp.png", mode="wb") as tmp:
             tmp.write(responce.content)
         pixmap = QPixmap()
-        pixmap.load("tmp.png")
+        pixmap.load("image/tmp.png")
         self.map.setPixmap(pixmap)
 
     def keyPressEvent(self, event):
