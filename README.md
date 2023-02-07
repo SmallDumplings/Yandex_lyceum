@@ -1,1 +1,1 @@
-This repository was creating for solving task in Yandex Lyceum
+This repository was created for solving task in Yandex Lyceum
