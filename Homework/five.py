@@ -22,35 +22,45 @@ class AppWindow(QMainWindow):
         self.button.move(400, 10)
         self.button.resize(50, 30)
 
-        self.map_ll = [55.7031122, 37.5308796]
+        self.map_ll = '55.7031122,37.5308796'
         self.zoom = 5
         self.map_l = "map"
-        self.map_key = "40d1649f-0493-4b70-98ba-98533de7710b"
+        self.api_key = "40d1649f-0493-4b70-98ba-98533de7710b"
 
         self.refresh_map()
+        self.button.clicked.connect(lambda: self.get_coordinates(self.lineedit.text()))
 
     def refresh_map(self):
-        geocode_request = 'http://geocode-maps.yandex.ru/1.x/'
-        geocode_params = {'apikey': self.map_key,
-                          'geocode': self.lineedit.text(),
-                          'format': 'json'}
-        geocode_response = requests.get(geocode_request, params=geocode_params)
-        feature = geocode_response.json()['response']['GeoObjectCollection']['featureMember']
-        toponym = feature[0]['GeoObject']
-        coordinates = toponym['Point']['pos']
-        ll = ','.join(coordinates.split())
-
-        map_params = {'l': self.map_l,
-                      'll': ll,
-                      'apikey': self.map_key,
-                      'zoom': self.zoom}
-        request = 'http://static-map.yandex.ru/1.x/'
+        request = 'https://static-maps.yandex.ru/1.x/'
+        map_params = {
+            'll': self.map_ll,
+            'l': self.map_l,
+            'z': 5,
+            'size': '450,450',
+            'apikey': self.api_key,
+            'pt': f'{self.map_ll},vkbkm'
+        }
         response = requests.get(request, params=map_params)
         with open('../Image/tmp.png', mode='wb') as tmp:
             tmp.write(response.content)
         pixmap = QPixmap()
-        pixmap.load('tmp.png')
+        pixmap.load('../Image/tmp.png')
         self.map.setPixmap(pixmap)
+
+    def get_coordinates(self, address):
+        geocode_request = f'http://geocode-maps.yandex.ru/1.x/'
+        geocode_params = {
+            'apikey': self.api_key,
+            'geocode': address,
+            'format': 'json'
+        }
+        response = requests.get(geocode_request, params=geocode_params)
+        json_response = response.json()
+        features = json_response['response']['GeoObjectCollection']['featureMember']
+        toponym = features[0]['GeoObject']
+        toponym_coordinates = toponym['Point']['pos']
+        self.map_ll = ','.join(toponym_coordinates.split())
+        self.refresh_map()
 
 
 if __name__ == "__main__":
