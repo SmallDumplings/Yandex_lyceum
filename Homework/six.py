@@ -48,7 +48,6 @@ class AppWindow(QMainWindow):
             'apikey': self.api_key,
             'pt': f'{",".join(map(str, self.mark_coordinates))},vkbkm'
         }
-        print(self.map_ll)
         response = requests.get(request, params=map_params)
         with open('../Image/tmp.png', mode='wb') as tmp:
             tmp.write(response.content)
